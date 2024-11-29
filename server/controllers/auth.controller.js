@@ -16,7 +16,7 @@ export const signUp = async (req, res) => {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    const defaultUserProfilePicture = "https://avatar.iran.liara.run/public";
+    const defaultUserProfilePicture = `https://avatar.iran.liara.run/username?username=${fullName}`;
 
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
@@ -65,6 +65,7 @@ export const login = async (req, res) => {
     res.status(201).json({
       _id: user._id,
       fullName: user.fullName,
+      email: user.email,
       profilePicture: user.profilePicture,
     });
   } catch (error) {

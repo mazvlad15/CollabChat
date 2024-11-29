@@ -31,11 +31,14 @@ export const createRoom = async (req, res) => {
         .json({ error: "Room already exists, change name" });
     }
 
+    const getRoomPicture = "https://avatar.iran.liara.run/username?username="+name;
+
     const newRoom = new Room({
       name,
       creatorId,
       participants,
       isPrivate,
+      roomPicture: getRoomPicture,
     });
 
     if (newRoom) {

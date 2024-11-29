@@ -22,6 +22,10 @@ const roomSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    roomPicture: {
+      type: String,
+      default: "",
+    }
   },
   { timestamps: true }
 );
