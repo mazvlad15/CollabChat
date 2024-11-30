@@ -6,3 +6,5 @@ const roomContext = create((set) => ({
     messages: [],
     setMessages: (messages) => set({messages}),
 }))
+
+export default roomContext;

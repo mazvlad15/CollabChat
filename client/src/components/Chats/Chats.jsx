@@ -4,6 +4,7 @@ import Chat from "./Chat";
 import useGetAllRooms from "../../hooks/useGetAllRooms";
 import CircularProgress from "@mui/material/CircularProgress"
 import toast, { Toaster } from "react-hot-toast";
+import roomContext from "../../context/roomContext";
 
 const Chats = () => {
 

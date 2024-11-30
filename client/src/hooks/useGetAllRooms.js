@@ -26,7 +26,7 @@ const useGetAllRooms = () => {
     getAllRooms();
   }, []);
 
-  return { isLoading, error, rooms };
+  return { isLoading, error, rooms, setRooms };
 };
 
 export default useGetAllRooms;

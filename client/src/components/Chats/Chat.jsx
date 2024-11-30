@@ -1,10 +1,16 @@
 import React from "react";
+import roomContext from "../../context/roomContext";
 
 const Chat = ({room}) => {
+
+  const setSelectedRoom = roomContext((state) => state.setSelectedRoom);
+  const selectedRoom = roomContext((state) => state.selectedRoom);
+  const isSelected = selectedRoom?._id === room._id;
+
   return (
-    <div>
+    <div onClick={() => setSelectedRoom(room)}>
       <div
-        className={`flex items-center hover:bg-background rounded cursor-pointer p-2`}
+        className={`flex items-center ${isSelected && "bg-background"}  hover:bg-background rounded cursor-pointer p-2`}
       >
         <div className='avatar flex'>
           <div className="w-14 rounded ">

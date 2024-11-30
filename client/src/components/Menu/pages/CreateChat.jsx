@@ -7,8 +7,8 @@ import useCreateRoom from "../../../hooks/useCreateRoom";
 import { z } from "zod";
 
 const createSchema = z.object({
-  name: z.string().min(3, "Name must have at least 3 characters")
-})
+  name: z.string().min(3, "Name must have at least 3 characters"),
+});
 
 const CreateChat = () => {
   const { isLoading, errorUsers, users } = useGetAllUsers();
@@ -16,8 +16,11 @@ const CreateChat = () => {
     name: "",
     type: true,
   });
+
   const [searchUserInput, setSearchUserInput] = useState("");
   const [participants, setParticipants] = useState([]);
+  const [ZODErrors, setZODErrors] = useState({});
+  const [errorCreateRoom, setErrorCreateRoom] = useState(null);
 
   toast.error(errorUsers);
 
@@ -39,16 +42,20 @@ const CreateChat = () => {
     user.fullName.toLowerCase().includes(searchUserInput)
   );
 
-  const {isLoadingCreateRoom, errorCreate, createRoom} = useCreateRoom();
+  const { isLoadingCreateRoom, createRoom } = useCreateRoom();
 
   const createRoomBtn = async (e) => {
-    
     e.preventDefault();
     try {
       createSchema.parse(roomData);
-      await createRoom({name: roomData.name, participants, isPrivate: roomData.type});
-      toast.success("Success created new room")
-      console.log(errorCreate);
+      const result = await createRoom({
+        name: roomData.name,
+        participants,
+        isPrivate: roomData.type,
+      });
+      if (result.response?.data?.error) {
+        setErrorCreateRoom(result.response?.data?.error);
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         const formattedErrors = error.errors.reduce((acc, curr) => {
@@ -58,7 +65,7 @@ const CreateChat = () => {
         setZODErrors(formattedErrors);
       }
     }
-  }
+  };
 
   return (
     <div>
@@ -71,6 +78,9 @@ const CreateChat = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Create New Group
           </h2>
+          {errorCreateRoom && (
+            <div className="text-red-500 text-center text-xl font-bold ">{errorCreateRoom}</div>
+          )}
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -101,7 +111,7 @@ const CreateChat = () => {
               {participants.map((id) => {
                 const user = users.find((u) => u._id === id);
                 return (
-                  <div className="badge badge-accent" key={id}>
+                  <div className="badge badge-accent me-2" key={id}>
                     {user?.fullName}
                   </div>
                 );
@@ -135,7 +145,7 @@ const CreateChat = () => {
                   type="radio"
                   name="groupType"
                   className="radio radio-success"
-                  value={false} 
+                  value={false}
                   onChange={(e) =>
                     setRoomData((prev) => ({ ...prev, type: e.target.value }))
                   }

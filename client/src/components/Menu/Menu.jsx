@@ -17,7 +17,6 @@ const Menu = () => {
 
   const logoutBtn = () => {
     logout();
-    console.log(error.message)
   };
 
   return (

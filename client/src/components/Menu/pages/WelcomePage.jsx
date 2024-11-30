@@ -11,7 +11,7 @@ const WelcomePage = ({ userName }) => {
           Nice to see you here! 😊 To start, select a chat or create a new one.
         </p>
         <div className="flex justify-center space-x-4">
-          <button className="px-6 py-2 bg-secondary text-white rounded-lg shadow-md hover:bg-primary transition">
+          <button className="px-6 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-secondary transition">
             Create Chat
           </button>
         </div>
