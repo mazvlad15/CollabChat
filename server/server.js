@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import path from "path";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.routes.js";
@@ -13,6 +14,8 @@ dotenv.config();
 
 const PORT = process.env.SERVER_PORT || 5000;
 
+const __dirname = path.resolve();
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -20,6 +23,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/messages", messageRoutes);
+
+app.user(express.static(path.join(__dirname, "/frontend/dist")))
 
 server.listen(PORT, () => {
   connectToMongoDb();
