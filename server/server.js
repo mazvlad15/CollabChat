@@ -24,7 +24,11 @@ app.use("/api/users", usersRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/messages", messageRoutes);
 
-app.user(express.static(path.join(__dirname, "/frontend/dist")))
+app.use(express.static(path.join(__dirname, "/client/dist")))
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"))
+})
 
 server.listen(PORT, () => {
   connectToMongoDb();
