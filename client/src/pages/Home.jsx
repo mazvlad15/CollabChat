@@ -3,7 +3,6 @@ import Menu from "../components/Menu/Menu";
 import Chats from "../components/Chats/Chats";
 import { Messages } from "../components/Messages/Messages";
 import WelcomePage from "../components/Menu/pages/WelcomePage";
-import Profile from "../components/Menu/pages/Profile";
 import roomContext from "../context/roomContext";
 
 const Home = () => {
@@ -12,7 +11,7 @@ const Home = () => {
   const setSelectedRoom = roomContext((state) => state.setSelectedRoom);
 
   useEffect(() => {
-    return () => setSelectedRoom(null);
+    return () => {setSelectedRoom(null);};
   }, [setSelectedRoom])
 
   return (
@@ -22,7 +21,6 @@ const Home = () => {
         <div className="flex  bg-white rounded-3xl gap-5 col-span-11">
           <Chats />
           {!selectedRoom ? <WelcomePage /> : <Messages />}
-          {/* <Profile /> */}
         </div>
       </div>
     </div>

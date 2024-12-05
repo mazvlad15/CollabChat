@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import Message from "./Message";
 import ScrollToBottom from "react-scroll-to-bottom";
 import WriteMessage from "./WriteMessage";
 import useGetAllMessages from "../../hooks/useGetMessages";
 import MessageSkeleton from "../skeleton/MessageSkeleton";
+import useReceiveMessage from "../../hooks/useReceiveMessage"; 
 
 export const Messages = () => {
-  const { isLoading, errorGetMessages, messages } = useGetAllMessages();
+  const { isLoading, errorGetMessages, messages} = useGetAllMessages();
+
 
   return (
     <div className="flex flex-col w-full mt-3 mx-3 p-2">

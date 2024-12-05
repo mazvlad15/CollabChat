@@ -1,12 +1,13 @@
 import Message from "../models/message.model.js";
 import Room from "../models/room.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const getMessages = async (req, res) => {
   try {
     const roomId = req.params.id;
     const messages = await Message.find({ roomId }).populate(
       "senderId",
-      "username profilePicture"
+      "fullName profilePicture"
     );
 
     if (!messages) {
@@ -31,7 +32,8 @@ export const createRoom = async (req, res) => {
         .json({ error: "Room already exists, change name" });
     }
 
-    const getRoomPicture = "https://avatar.iran.liara.run/username?username="+name;
+    const getRoomPicture =
+      "https://avatar.iran.liara.run/username?username=" + name;
 
     const newRoom = new Room({
       name,
@@ -43,6 +45,15 @@ export const createRoom = async (req, res) => {
 
     if (newRoom) {
       await newRoom.save();
+
+      participants.forEach((participantId) => {
+        const socketId = getReceiverSocketId(participantId);
+        
+        if (socketId) {
+          io.to(socketId).emit("createRoom", newRoom);
+        }
+      });
+
       res.status(201).json({
         _id: newRoom._id,
         name: newRoom.name,
@@ -53,9 +64,11 @@ export const createRoom = async (req, res) => {
       return res.status(400).json({ error: "Error to create new room" });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal Server Error create room" });
   }
 };
+
 
 export const getRoomsWhereUserIn = async (req, res) => {
   try {
@@ -78,7 +91,6 @@ export const getRoomsWhereUserIn = async (req, res) => {
 export const addParticipant = async (req, res) => {
   try {
     const userId = req.user._id;
-
     const participantId = req.body.participantId;
     const roomId = req.params.roomId;
 
@@ -88,13 +100,8 @@ export const addParticipant = async (req, res) => {
       return res.status(400).json({ error: "Room doesn't exist" });
     }
 
-    console.log("User id: " + userId + " " + typeof userId + "\n room owner " + room.creatorId.toString());
-
-
     if (userId.toString() !== room.creatorId.toString()) {
-      return res
-        .status(400)
-        .json({ error: "Only the owner can add participants" });
+      return res.status(400).json({ error: "Only the owner can add participants" });
     }
 
     if (room.participants.includes(participantId)) {
@@ -102,14 +109,20 @@ export const addParticipant = async (req, res) => {
     }
 
     room.participants.push(participantId);
-
     await room.save();
+
+    const socketId = getReceiverSocketId(participantId); 
+    if (socketId) {
+      io.to(socketId).emit("updateRoom", room);
+    }
+
+    io.to(roomId).emit("updateRoom", room); 
+    io.to(socketId).emit("updateRoom", room);
 
     res.status(200).json({ message: "Participant added successfully" });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error while adding participant" });
+    res.status(500).json({ error: "Internal Server Error while adding participant" });
   }
 };
+

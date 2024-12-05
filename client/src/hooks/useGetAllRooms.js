@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import authContext from "../context/authContext";
 import axios from "axios";
+import { useSocketContext } from "../context/socketContext";
 
 const useGetAllRooms = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [rooms, setRooms] = useState([]);
+  const { socket } = useSocketContext();
 
   useEffect(() => {
     const getAllRooms = async () => {
@@ -23,8 +25,30 @@ const useGetAllRooms = () => {
         setIsLoading(false);
       }
     };
+
     getAllRooms();
-  }, []);
+
+    if (socket) {
+      socket.on("createRoom", (newRoom) => {
+        setRooms((prevRooms) => [...prevRooms, newRoom]);
+      });
+
+      socket.on("updateRoom", (updatedRoom) => {
+        setRooms((prevRooms) =>
+          prevRooms.map((room) =>
+            room._id === updatedRoom._id ? updatedRoom : room
+          )
+        );
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("createRoom");
+        socket.off("updateRoom");
+      }
+    };
+  }, [socket]);
 
   return { isLoading, error, rooms, setRooms };
 };

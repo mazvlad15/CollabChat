@@ -1,25 +1,29 @@
-import { useMutation } from "react-query";
+import { useState } from "react";
+import authContext from "../context/authContext";
 import axios from "axios";
-import useAuthStore from "../context/authContext"; 
 
 const useLogout = () => {
-  const setAuthState = useAuthStore((state) => state.setAuthState);
+  const [loading, setLoading] = useState(false);
+  const setAuthState = authContext((state) => state.setAuthState);
 
-  const mutation = useMutation(
-    async () => {
-      const response = await axios.post("/api/auth/logout");
+  const logout = async () => {
+    try {
+      const res = await axios.post("/api/auth/logout");
+      const data = res.data;
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       localStorage.removeItem("user");
-      setAuthState(null); 
-      return response.data;
+      setAuthState(null);
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
     }
-  );
-
-  return {
-    logout: mutation.mutate,
-    isLoading: mutation.isLoading,
-    isError: mutation.isError,
-    error: mutation.error,
   };
+
+  return { loading, logout };
 };
 
 export default useLogout;

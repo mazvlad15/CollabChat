@@ -14,7 +14,6 @@ const WriteMessage = () => {
     if (!message) return;
     await sendMessage(message);
     setMessage("");
-    console.log(errorSend);
   };
 
   const handleKeyDown = (e) => {

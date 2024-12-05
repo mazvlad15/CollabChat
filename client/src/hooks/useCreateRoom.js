@@ -12,7 +12,6 @@ const useCreateRoom = () => {
     setIsLoading(true);
     setErrorCreate(null);
     try {
-      console.log("Date transmise : " + JSON.stringify(roomData));
       const response = await axios.post("/api/rooms/create", roomData);
       setIsLoading(false);
       if (response.data.error) {

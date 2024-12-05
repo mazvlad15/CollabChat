@@ -5,6 +5,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { CircularProgress } from "@mui/material";
 import useCreateRoom from "../../../hooks/useCreateRoom";
 import { z } from "zod";
+import roomContext from "../../../context/roomContext";
 
 const createSchema = z.object({
   name: z.string().min(3, "Name must have at least 3 characters"),
@@ -21,6 +22,7 @@ const CreateChat = () => {
   const [participants, setParticipants] = useState([]);
   const [ZODErrors, setZODErrors] = useState({});
   const [errorCreateRoom, setErrorCreateRoom] = useState(null);
+  const setSelectedRoom = roomContext((state) => state.setSelectedRoom);
 
   toast.error(errorUsers);
 
@@ -55,6 +57,8 @@ const CreateChat = () => {
       });
       if (result.response?.data?.error) {
         setErrorCreateRoom(result.response?.data?.error);
+      } else {
+        document.getElementById("createChat").close()
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -79,7 +83,9 @@ const CreateChat = () => {
             Create New Group
           </h2>
           {errorCreateRoom && (
-            <div className="text-red-500 text-center text-xl font-bold ">{errorCreateRoom}</div>
+            <div className="text-red-500 text-center text-xl font-bold ">
+              {errorCreateRoom}
+            </div>
           )}
 
           <div className="mb-4">
@@ -172,6 +178,9 @@ const CreateChat = () => {
               <button
                 className="btn px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
                 aria-label="Cancel"
+                onClick={() => {
+                  () => document.getElementById("createChat").closeModal();
+                }}
               >
                 Cancel
               </button>

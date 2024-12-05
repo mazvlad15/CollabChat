@@ -1,9 +1,11 @@
 import React from "react";
 import roomContext from "../../context/roomContext";
-
+import { useSocketContext } from "../../context/socketContext";
 
 export const User = ({ user, onClick, selectedUser }) => {
   const selectedRoom = roomContext((state) => state.selectedRoom);
+  const { onlineUsers } = useSocketContext();
+  const isOnline = onlineUsers.includes(user._id);
 
   return (
     <div
@@ -29,7 +31,11 @@ export const User = ({ user, onClick, selectedUser }) => {
                 <p className="text-xs text-red-500">Owner</p>
               )}
             </div>
-            <div className="bg-green-500 rounded-full size-3 ms-auto"></div>
+            {isOnline ? (
+              <div className="bg-green-500 rounded-full size-3 ms-auto"></div>
+            ) : (
+              <div className="bg-red-500 rounded-full size-3 ms-auto"></div>
+            )}
           </div>
         </div>
       </div>

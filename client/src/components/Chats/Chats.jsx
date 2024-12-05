@@ -4,13 +4,11 @@ import Chat from "./Chat";
 import useGetAllRooms from "../../hooks/useGetAllRooms";
 import CircularProgress from "@mui/material/CircularProgress"
 import toast, { Toaster } from "react-hot-toast";
-import roomContext from "../../context/roomContext";
 
 const Chats = () => {
 
   const {rooms, isLoading, error} = useGetAllRooms();
 
-  toast.error(error);
 
   return (
     <div className="flex flex-col mt-3 ms-3 p-2 w-4/12 ">
