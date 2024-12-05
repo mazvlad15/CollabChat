@@ -15,7 +15,7 @@ export const SocketContextProvider = ({ children }) => {
 
   useEffect(() => {
     if (authState) {
-      const socket = io("http://localhost:5000", {
+      const socket = io("https://collabchat.onrender.com", {
         query: {
           userId: authState._id,
         },
