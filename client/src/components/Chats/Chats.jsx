@@ -3,7 +3,6 @@ import { Search } from "./Search";
 import Chat from "./Chat";
 import useGetAllRooms from "../../hooks/useGetAllRooms";
 import CircularProgress from "@mui/material/CircularProgress"
-import toast, { Toaster } from "react-hot-toast";
 
 const Chats = () => {
 
@@ -12,7 +11,6 @@ const Chats = () => {
 
   return (
     <div className="flex flex-col mt-3 ms-3 p-2 w-4/12 ">
-      {error && <Toaster />}
       <Search />
       <div className="mt-2 overflow-auto">
         {isLoading && <CircularProgress />}

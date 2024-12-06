@@ -28,10 +28,10 @@ const Login = () => {
 
   const loginBtn = async (e) => {
     e.preventDefault();
+    toast.error(errorLogin);
     try {
       loginSchema.parse(input);
       await login(input);
-      toast.error(errorLogin);
       setZODErrors({});
     } catch (error) {
       if (error instanceof z.ZodError) {

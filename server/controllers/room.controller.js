@@ -101,28 +101,26 @@ export const addParticipant = async (req, res) => {
     }
 
     if (userId.toString() !== room.creatorId.toString()) {
-      return res.status(400).json({ error: "Only the owner can add participants" });
+      return res
+        .status(400)
+        .json({ error: "Only the owner can add participants" });
     }
 
     if (room.participants.includes(participantId)) {
-      return res.status(400).json({ error: "Participant already in the room" });
+      return res
+        .status(400)
+        .json({ error: "Participant already in the room" });
     }
 
     room.participants.push(participantId);
     await room.save();
 
-    const socketId = getReceiverSocketId(participantId); 
-    if (socketId) {
-      io.to(socketId).emit("updateRoom", room);
-    }
-
-    io.to(roomId).emit("updateRoom", room); 
-    io.to(socketId).emit("updateRoom", room);
 
     res.status(200).json({ message: "Participant added successfully" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error while adding participant" });
+    res
+      .status(500)
+      .json({ error: "Internal Server Error while adding participant" });
   }
 };
-

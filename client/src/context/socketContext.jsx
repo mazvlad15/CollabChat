@@ -13,6 +13,8 @@ export const SocketContextProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const authState = authContext((state) => state.authState);
 
+  //https://collabchat.onrender.com
+
   useEffect(() => {
     if (authState) {
       const socket = io("https://collabchat.onrender.com", {

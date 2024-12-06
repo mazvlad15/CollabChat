@@ -30,22 +30,15 @@ const useGetAllRooms = () => {
 
     if (socket) {
       socket.on("createRoom", (newRoom) => {
+        console.log("create")
         setRooms((prevRooms) => [...prevRooms, newRoom]);
       });
 
-      socket.on("updateRoom", (updatedRoom) => {
-        setRooms((prevRooms) =>
-          prevRooms.map((room) =>
-            room._id === updatedRoom._id ? updatedRoom : room
-          )
-        );
-      });
     }
 
     return () => {
       if (socket) {
         socket.off("createRoom");
-        socket.off("updateRoom");
       }
     };
   }, [socket]);

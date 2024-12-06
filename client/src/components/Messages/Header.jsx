@@ -19,13 +19,17 @@ const Header = () => {
   const { onlineUsers } = useSocketContext();
   const isCreator = selectedRoom.creatorId === authState._id;
 
+  const onlineUsersInRoom = users.filter((user) => {
+    return onlineUsers.includes(user._id);
+  });
+
   return (
     <div className="flex items-center mb-4">
       <div className="flex flex-col">
         <h2 className="text-4xl font-semibold">{selectedRoom.name}</h2>
         <button onClick={showModalBtn} className="flex focus:outline-none">
           {selectedRoom.participants.length} members,
-          <p className="text-green-500"> {onlineUsers.length} online </p>
+          <p className="text-green-500"> {onlineUsersInRoom.length} online </p>
         </button>
       </div>
       <div className="ms-auto flex gap-2">

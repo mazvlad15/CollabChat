@@ -61,7 +61,7 @@ const Signup = () => {
       variants={pageVariants}
       transition={{ duration: 0.5 }}
     >
-      <Toaster />
+      {errorSignUp && <Toaster />}
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <a
           href="#"

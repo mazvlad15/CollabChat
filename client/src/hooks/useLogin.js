@@ -21,7 +21,7 @@ const useLogin = () => {
 
       return response.data;
     } catch (error) {
-      setIsLoading(error.response?.data?.error || "Something went wrong");
+      setErrorLogin(error.response?.data?.error || "Something went wrong");
     } finally {
       setIsLoading(false);
     }

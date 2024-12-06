@@ -22,7 +22,6 @@ const useSignup = () => {
 
       return response.data;
     } catch (error) {
-      console.log(error.response?.data?.error);
       setErrorSignUp(error.response?.data?.error || "Something went wrong");
     } finally {
       isLoading(false);
