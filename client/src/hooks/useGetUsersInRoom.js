@@ -30,9 +30,19 @@ const useGetUsersInRoom = () => {
 
     if (selectedRoom._id) getUsersInRoom();
 
+      socket.on("updateParticipants", (updatedParticipant) => {
+        setUsers((prevUsers) => [...prevUsers, updatedParticipant])
+      })
+
+      return () => {
+        if(socket){
+          socket.off("updateParticipants")
+        }
+      }
+    
   }, [selectedRoom._id, socket]);
 
-  return { isLoading, errorGetUsers, users };
+  return { isLoading, errorGetUsers, users, setUsers };
 };
 
 export default useGetUsersInRoom;

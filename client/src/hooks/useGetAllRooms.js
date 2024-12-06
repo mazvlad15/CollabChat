@@ -30,10 +30,9 @@ const useGetAllRooms = () => {
 
     if (socket) {
       socket.on("createRoom", (newRoom) => {
-        console.log("create")
         setRooms((prevRooms) => [...prevRooms, newRoom]);
+        socket.emit("join_room", newRoom._id);
       });
-
     }
 
     return () => {

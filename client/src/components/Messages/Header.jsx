@@ -28,7 +28,7 @@ const Header = () => {
       <div className="flex flex-col">
         <h2 className="text-4xl font-semibold">{selectedRoom.name}</h2>
         <button onClick={showModalBtn} className="flex focus:outline-none">
-          {selectedRoom.participants.length} members,
+          {users.length} members,
           <p className="text-green-500"> {onlineUsersInRoom.length} online </p>
         </button>
       </div>

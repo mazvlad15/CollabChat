@@ -1,3 +1,4 @@
+import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import Room from "../models/room.model.js";
 import { getReceiverSocketId, io } from "../socket/socket.js";
@@ -46,13 +47,14 @@ export const createRoom = async (req, res) => {
     if (newRoom) {
       await newRoom.save();
 
-      participants.forEach((participantId) => {
+      const notifications = participants.map((participantId) => {
         const socketId = getReceiverSocketId(participantId);
-        
         if (socketId) {
-          io.to(socketId).emit("createRoom", newRoom);
+          return io.to(socketId).emit("createRoom", newRoom);
         }
       });
+
+      await Promise.all(notifications);
 
       res.status(201).json({
         _id: newRoom._id,
@@ -68,7 +70,6 @@ export const createRoom = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error create room" });
   }
 };
-
 
 export const getRoomsWhereUserIn = async (req, res) => {
   try {
@@ -95,6 +96,7 @@ export const addParticipant = async (req, res) => {
     const roomId = req.params.roomId;
 
     const room = await Room.findById(roomId);
+    const participant = await User.findById(participantId).select("_id profilePicture fullName");
 
     if (!room) {
       return res.status(400).json({ error: "Room doesn't exist" });
@@ -107,14 +109,20 @@ export const addParticipant = async (req, res) => {
     }
 
     if (room.participants.includes(participantId)) {
-      return res
-        .status(400)
-        .json({ error: "Participant already in the room" });
+      return res.status(400).json({ error: "Participant already in the room" });
     }
 
     room.participants.push(participantId);
     await room.save();
 
+    const notifications = room.participants.map((participantId) => {
+      const socketId = getReceiverSocketId(participantId);
+      if (socketId) {
+        return io.to(socketId).emit("updateParticipants", participant);
+      }
+    });
+
+    await Promise.all(notifications);
 
     res.status(200).json({ message: "Participant added successfully" });
   } catch (error) {

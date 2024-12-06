@@ -7,10 +7,8 @@ import toast, { Toaster } from "react-hot-toast";
 const UsersOnlineModal = () => {
   const { isLoading, errorGetUsers, users } = useGetUsersInRoom();
 
-  toast.error(errorGetUsers);
   return (
     <div>
-      {errorGetUsers && <Toaster />}
       <dialog id="my_modal_2" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg mb-3 ms-2">Users</h3>
